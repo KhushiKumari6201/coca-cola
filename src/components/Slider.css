@@ -1,0 +1,129 @@
+.slider-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.slider-bottles {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-bottle {
+  height: 85%;
+  max-height: 700px;
+  object-fit: contain;
+  z-index: 5;
+  filter: drop-shadow(0 30px 40px rgba(0,0,0,0.5)) drop-shadow(0 10px 10px rgba(0,0,0,0.3));
+}
+
+.next-bottle-wrapper {
+  position: absolute;
+  right: -5%;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  z-index: 4;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.next-bottle-inner {
+  height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.next-bottle {
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 15px 25px rgba(0,0,0,0.4));
+  transition: all 0.4s ease;
+}
+
+.next-bottle-wrapper:hover {
+  transform: translateY(-50%) scale(1.05);
+}
+
+.next-bottle-wrapper:hover .next-bottle {
+  opacity: 1 !important;
+  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.6));
+}
+
+.next-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  flex-direction: column;
+  gap: 5px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.next-indicator svg {
+  transition: transform 0.3s ease;
+  width: 18px;
+  height: 18px;
+}
+
+.next-bottle-wrapper:hover .next-indicator {
+  background: #fff;
+  color: #000;
+  transform: scale(1.1);
+  box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+}
+
+.next-bottle-wrapper:hover .next-indicator svg {
+  transform: translateX(3px);
+}
+
+@media (max-width: 1200px) {
+  .next-bottle-wrapper {
+    right: -10%;
+  }
+}
+
+@media (max-width: 1024px) {
+  .main-bottle {
+    height: 70%;
+  }
+  .next-bottle-wrapper {
+    right: 0;
+  }
+  .next-bottle-inner {
+    height: 250px;
+  }
+  .next-indicator {
+    width: 60px;
+    height: 60px;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .next-bottle-wrapper {
+    display: none;
+  }
+}
