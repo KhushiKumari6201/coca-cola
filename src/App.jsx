@@ -10,6 +10,8 @@ import GenericPage from './pages/GenericPage'
 import AboutPage from './pages/AboutPage'
 import Footer from './components/Footer'
 import ContactPage from './pages/ContactPage'
+import RewardsPage from './pages/RewardsPage'
+import MerchPage from './pages/MerchPage'
 
 import LegalPage from './pages/LegalPage'
 
@@ -106,8 +108,8 @@ function App() {
       case 'seller': return <SellerDashboard />;
       case 'cart': return <CartPage />;
       case 'about': return <AboutPage />;
-      case 'rewards': return <GenericPage title="Rewards" description="Earn points and redeem them for exclusive Coca-Cola merchandise." />;
-      case 'merch': return <GenericPage title="Merchandise" description="Shop our exclusive collection of clothing and accessories." />;
+      case 'rewards': return <RewardsPage onNavigate={setCurrentPage} />;
+      case 'merch': return <MerchPage />;
       case 'contact': return <ContactPage />;
       case 'privacy': return <LegalPage {...privacyData} />;
       case 'terms': return <LegalPage {...termsData} />;
