@@ -1,0 +1,212 @@
+/* QR Code Display Modal */
+.qrd-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.88);
+  backdrop-filter: blur(12px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.qrd-modal {
+  background: linear-gradient(145deg, #111, #1c1c1c);
+  border: 1px solid rgba(255,0,0,0.25);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 380px;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.7), 0 0 60px rgba(255,0,0,0.08);
+}
+
+/* Header */
+.qrd-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.qrd-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #fff;
+}
+.qrd-logo-icon { font-size: 1.2rem; }
+.qrd-close {
+  background: rgba(255,255,255,0.08);
+  border: none;
+  color: #aaa;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+.qrd-close:hover { background: #f00; color: #fff; }
+
+/* Body */
+.qrd-body { padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+
+/* Product selector pills */
+.qrd-products {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.qrd-product-btn {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: transparent;
+  color: #aaa;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.qrd-product-btn.active {
+  background: linear-gradient(90deg, #f00, #c00);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(255,0,0,0.3);
+}
+.qrd-product-btn:hover:not(.active) { border-color: rgba(255,0,0,0.4); color: #fff; }
+
+/* QR wrap */
+.qrd-qr-wrap {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.03);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
+/* Corner brackets */
+.qrd-corner {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-color: #f00;
+  border-style: solid;
+  border-width: 0;
+}
+.qrd-tl { top: 10px; left: 10px; border-top-width: 3px; border-left-width: 3px; border-radius: 4px 0 0 0; }
+.qrd-tr { top: 10px; right: 10px; border-top-width: 3px; border-right-width: 3px; border-radius: 0 4px 0 0; }
+.qrd-bl { bottom: 10px; left: 10px; border-bottom-width: 3px; border-left-width: 3px; border-radius: 0 0 0 4px; }
+.qrd-br { bottom: 10px; right: 10px; border-bottom-width: 3px; border-right-width: 3px; border-radius: 0 0 4px 0; }
+
+.qrd-qr-inner {
+  padding: 16px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 12px;
+}
+
+/* Center logo overlay */
+.qrd-center-logo {
+  position: absolute;
+  font-size: 1.4rem;
+  background: #111;
+  padding: 4px;
+  border-radius: 6px;
+  line-height: 1;
+}
+
+/* Product info */
+.qrd-product-info { text-align: center; }
+.qrd-product-info h3 { font-size: 1.1rem; font-weight: 700; color: #fff; margin: 0 0 6px; }
+.qrd-pts-badge {
+  display: inline-block;
+  background: rgba(255,0,0,0.15);
+  border: 1px solid rgba(255,0,0,0.3);
+  color: #ff6666;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 4px 16px;
+  border-radius: 20px;
+}
+
+/* Timer */
+.qrd-timer-row { width: 100%; display: flex; flex-direction: column; gap: 5px; }
+.qrd-timer-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.qrd-timer-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f00, #ff6600);
+  border-radius: 4px;
+}
+.qrd-timer-text { font-size: 0.7rem; color: #666; text-align: center; }
+
+/* Instructions */
+.qrd-instructions { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+.qrd-inst-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.78rem;
+  color: #aaa;
+  line-height: 1.4;
+}
+.qrd-inst-num {
+  width: 20px; height: 20px;
+  background: linear-gradient(135deg, #f00, #c00);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Simulate demo button */
+.qrd-simulate-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px dashed rgba(255,255,255,0.15);
+  background: transparent;
+  color: #888;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.qrd-simulate-btn:hover { border-color: rgba(255,0,0,0.4); color: #ff6666; background: rgba(255,0,0,0.04); }
+
+/* Success state */
+.qrd-success {
+  padding: 40px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.qrd-success-icon { font-size: 4rem; }
+.qrd-success h2 { font-size: 1.5rem; color: #fff; }
+.qrd-success-product { color: #aaa; font-size: 0.9rem; }
+.qrd-success-pts {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #00cc66;
+  text-shadow: 0 0 20px rgba(0,200,100,0.5);
+}
+.qrd-success-note { font-size: 0.75rem; color: #555; }

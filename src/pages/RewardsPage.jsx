@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './RewardsPage.css';
+import QRScannerModal from '../components/QRScannerModal';
+import QRCodeDisplay from '../components/QRCodeDisplay';
 
 const PRODUCTS = {
   Drinks: [
@@ -28,6 +30,63 @@ const RewardsPage = ({ onNavigate }) => {
   const [cartQty, setCartQty] = useState({});
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [showRedeemModal, setShowRedeemModal] = useState(false);
+  const [rewardPoints, setRewardPoints] = useState(750);
+  const [redeemedReward, setRedeemedReward] = useState(null);
+  const [redeemSuccess, setRedeemSuccess] = useState(false);
+  const [featuredRedeemedIds, setFeaturedRedeemedIds] = useState([]);
+  const [featuredToast, setFeaturedToast] = useState(null);
+  const [scanState, setScanState] = useState('idle');
+  const [scanCount, setScanCount] = useState(12);
+  const [scanHistory, setScanHistory] = useState([
+    { id: 1, product: 'Classic Coke', pts: 50, time: '2 hrs ago' },
+    { id: 2, product: 'Lime Edition', pts: 75, time: 'Yesterday' },
+  ]);
+  const [showQRScanner, setShowQRScanner] = useState(false);
+  const [showQRDisplay, setShowQRDisplay] = useState(false);
+
+  const handleRealScanSuccess = (data, pts) => {
+    setScanCount(prev => prev + 1);
+    setRewardPoints(prev => prev + pts);
+    setScanHistory(prev => [{ id: Date.now(), product: data.length > 20 ? 'QR Product' : data, pts, time: 'Just now' }, ...prev.slice(0, 2)]);
+    setFeaturedToast(`+${pts} pts earned from scan! 🎯`);
+    setTimeout(() => { setShowQRScanner(false); setFeaturedToast(null); }, 3000);
+  };
+
+  const FEATURED = [
+    { id: 'f1', img: '/images/i1.png', icon: '🎵', title: 'Concert Tickets', desc: 'VIP Access to Summer Festivals', cost: 5000, tag: 'Premium' },
+    { id: 'f2', img: '/images/i2.png', icon: '👕', title: 'Limited Edition Merch', desc: 'Exclusive Coca-Cola Apparel', cost: 2500, tag: 'Popular' },
+    { id: 'f3', img: '/images/i3.png', icon: '🖥️', title: 'Digital Downloads', desc: 'Wallpapers, Music, and more', cost: 500, tag: 'Easy Redeem' },
+    { id: 'f4', img: '/images/i1.png', icon: '💰', title: 'Cashback ₹100', desc: 'Direct wallet credit', cost: 800, tag: 'Cashback' },
+    { id: 'f5', img: '/images/i2.png', icon: '🥤', title: 'Free 6-Pack', desc: 'Any Coca-Cola variety', cost: 300, tag: 'Drinks' },
+    { id: 'f6', img: '/images/i3.png', icon: '🎁', title: 'Mystery Box', desc: 'Surprise exclusive goodies', cost: 1200, tag: 'New' },
+  ];
+
+  const handleFeaturedRedeem = (item) => {
+    if (rewardPoints < item.cost || featuredRedeemedIds.includes(item.id)) return;
+    setRewardPoints(prev => prev - item.cost);
+    setFeaturedRedeemedIds(prev => [...prev, item.id]);
+    setFeaturedToast(`✅ ${item.title} redeemed! −${item.cost} pts`);
+    setTimeout(() => setFeaturedToast(null), 3000);
+  };
+
+  const REWARDS = [
+    { id: 1, icon: '🥤', title: 'Free Drink', desc: 'Any Coca-Cola product', cost: 200 },
+    { id: 2, icon: '🎟️', title: 'Discount Coupon', desc: '20% off next order', cost: 350 },
+    { id: 3, icon: '👕', title: 'Merch Item', desc: 'Exclusive Coca-Cola apparel', cost: 500 },
+    { id: 4, icon: '🎵', title: 'VIP Experience', desc: 'Concert or festival access', cost: 800 },
+    { id: 5, icon: '💰', title: 'Cashback ₹50', desc: 'Direct wallet cashback', cost: 400 },
+    { id: 6, icon: '🎁', title: 'Mystery Box', desc: 'Surprise exclusive gift', cost: 600 },
+  ];
+
+  const handleRedeemReward = (reward) => {
+    if (rewardPoints < reward.cost) return;
+    setRedeemedReward(reward);
+    setRedeemSuccess(true);
+    setRewardPoints(prev => prev - reward.cost);
+    setTimeout(() => { setRedeemSuccess(false); setShowRedeemModal(false); setRedeemedReward(null); }, 2500);
+  };
+
 
   const handleAddToCart = (itemName) => {
     setCartQty(prev => ({...prev, [itemName]: (prev[itemName] || 0) + 1}));
@@ -156,17 +215,36 @@ const RewardsPage = ({ onNavigate }) => {
               <p>Scan the QR code on the product to collect reward points instantly.</p>
 
               <div className="mini-widget scan-widget">
-                <div className="scanner-ui">
-                  <div className="scanner-frame">
-                    <div className="scanner-laser"></div>
+                {/* Scanner preview card */}
+                <div className="scanner-preview-card" onClick={() => setShowQRScanner(true)}>
+                  <div className="scanner-frame-pro idle">
+                    <div className="corner tl"/><div className="corner tr"/>
+                    <div className="corner bl"/><div className="corner br"/>
+                    <div className="scanner-laser"/>
                     <svg viewBox="0 0 24 24" className="qr-code"><path fill="currentColor" d="M3 3h8v8H3zm2 2v4h4V5zm8-2h8v8h-8zm2 2v4h4V5zM3 13h8v8H3zm2 2v4h4v-4zm13-2h-4v2h2v2h-2v2h2v-2h2v2h2v-4h-2zm-2 2v2h-2v-2z"></path></svg>
+                    <p className="scan-tap-hint">Tap to open camera</p>
                   </div>
+                  <p className="scan-instruction">📷 Click to open live camera scanner</p>
                 </div>
+                {/* Stats */}
                 <div className="scan-stats">
-                  <div className="stat"><span>Scanned</span><strong>12</strong></div>
-                  <div className="stat"><span>Points</span><strong className="text-red">1200</strong></div>
+                  <div className="stat"><span>Total Scans</span><strong>{scanCount}</strong></div>
+                  <div className="stat"><span>Points</span><strong className="text-red">{rewardPoints}</strong></div>
                 </div>
-                <button className="widget-primary-btn" onClick={() => alert("Scanning...")}>Scan Now</button>
+                {/* History */}
+                <div className="scan-history">
+                  <p className="scan-history-title">Recent Scans</p>
+                  {scanHistory.map(h => (
+                    <div key={h.id} className="scan-history-row">
+                      <span className="scan-h-product">{h.product}</span>
+                      <span className="scan-h-time">{h.time}</span>
+                      <span className="scan-h-pts">+{h.pts} pts</span>
+                    </div>
+                  ))}
+                </div>
+                <button className="widget-primary-btn scan-now-btn" onClick={() => setShowQRDisplay(true)}>
+                  📲 Show My QR Code
+                </button>
               </div>
             </motion.div>
 
@@ -183,18 +261,30 @@ const RewardsPage = ({ onNavigate }) => {
                 <div className="progress-section">
                   <div className="progress-text">
                     <span>VIP Status</span>
-                    <span>750 / 1000 pts</span>
+                    <span className="pts-live">{rewardPoints} / 1000 pts</span>
                   </div>
                   <div className="progress-bar-bg">
-                    <motion.div initial={{width:0}} whileInView={{width: '75%'}} transition={{duration: 1}} className="progress-bar-fill"></motion.div>
+                    <motion.div
+                      initial={{width:0}}
+                      whileInView={{width: `${Math.min((rewardPoints/1000)*100,100)}%`}}
+                      transition={{duration:1}}
+                      className="progress-bar-fill"
+                    />
                   </div>
+                  <p className="progress-hint">{rewardPoints >= 1000 ? '🎉 VIP Unlocked!' : `${1000 - rewardPoints} pts to VIP`}</p>
                 </div>
                 <div className="badges-section">
-                  <div className="badge-item earned"><span role="img" aria-label="star">⭐</span></div>
-                  <div className="badge-item earned"><span role="img" aria-label="gift">🎁</span></div>
-                  <div className="badge-item locked"><span role="img" aria-label="lock">🔒</span></div>
+                  <div className="badge-item earned" title="First Scan">⭐</div>
+                  <div className="badge-item earned" title="First Purchase">🎁</div>
+                  <div className={`badge-item ${rewardPoints >= 500 ? 'earned' : 'locked'}`} title="500 Points">🏆</div>
                 </div>
-                <button className="widget-primary-btn outline">Redeem Rewards</button>
+                <div className="earn-quick-rewards">
+                  <div className="quick-reward-pill">🥤 Free Drink — 200 pts</div>
+                  <div className="quick-reward-pill">🎟️ Coupon — 350 pts</div>
+                </div>
+                <button className="widget-primary-btn outline" onClick={() => setShowRedeemModal(true)}>
+                  🎁 Redeem Rewards
+                </button>
               </div>
             </motion.div>
           </div>
@@ -203,32 +293,49 @@ const RewardsPage = ({ onNavigate }) => {
 
       <div className="featured-rewards">
         <h2>Featured Rewards</h2>
-        <div className="rewards-grid">
-          <div className="reward-item">
-            <div className="reward-image i1">
-               <img src="/images/i1.png" alt="Reward 1" />
-            </div>
-            <h3>Concert Tickets</h3>
-            <p>VIP Access to Summer Festivals</p>
-            <button className="redeem-btn">Redeem 5000 pts</button>
-          </div>
-          <div className="reward-item">
-            <div className="reward-image i2">
-              <img src="/images/i2.png" alt="Reward 2" />
-            </div>
-            <h3>Limited Edition Merch</h3>
-            <p>Exclusive Coca-Cola Apparel</p>
-            <button className="redeem-btn">Redeem 2500 pts</button>
-          </div>
-          <div className="reward-item">
-            <div className="reward-image i3">
-              <img src="/images/i3.png" alt="Reward 3" />
-            </div>
-            <h3>Digital Downloads</h3>
-            <p>Wallpapers, Music, and more</p>
-            <button className="redeem-btn">Redeem 500 pts</button>
-          </div>
+        <div className="featured-pts-bar">
+          <span>🔥 Your Points:</span>
+          <strong className="text-red">{rewardPoints} pts</strong>
+          <button className="featured-earn-more" onClick={() => setShowRedeemModal(true)}>+ Earn More</button>
         </div>
+        <div className="rewards-grid">
+          {FEATURED.map(item => {
+            const canAfford = rewardPoints >= item.cost;
+            const isRedeemed = featuredRedeemedIds.includes(item.id);
+            return (
+              <motion.div key={item.id} whileHover={{y:-6, boxShadow:'0 20px 40px rgba(255,0,0,0.15)'}} className={`reward-item ${isRedeemed ? 'reward-redeemed' : ''}`}>
+                <div className="reward-tag">{item.tag}</div>
+                <div className="reward-image">
+                  <img src={item.img} alt={item.title} />
+                  {isRedeemed && <div className="reward-claimed-overlay">✅ Claimed</div>}
+                </div>
+                <div className="reward-item-icon">{item.icon}</div>
+                <h3>{item.title}</h3>
+                <p>{item.desc}</p>
+                <div className="reward-cost-row">
+                  <span className={`reward-pts-cost ${!canAfford && !isRedeemed ? 'unaffordable' : ''}`}>
+                    {item.cost.toLocaleString()} pts
+                  </span>
+                  {!isRedeemed && !canAfford && (
+                    <span className="reward-pts-needed">Need {(item.cost - rewardPoints).toLocaleString()} more</span>
+                  )}
+                </div>
+                <button
+                  className={`redeem-btn featured-redeem-btn ${isRedeemed ? 'claimed' : !canAfford ? 'locked' : ''}`}
+                  onClick={() => handleFeaturedRedeem(item)}
+                  disabled={isRedeemed || !canAfford}
+                >
+                  {isRedeemed ? '✅ Claimed!' : canAfford ? '🎁 Redeem Now' : '🔒 Not Enough Points'}
+                </button>
+              </motion.div>
+            );
+          })}
+        </div>
+        {featuredToast && (
+          <motion.div initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} exit={{opacity:0}} className="featured-toast">
+            {featuredToast}
+          </motion.div>
+        )}
       </div>
 
       {isJoinModalOpen && (
@@ -326,6 +433,79 @@ const RewardsPage = ({ onNavigate }) => {
           </motion.div>
         </div>
       )}
+
+      {/* Redeem Rewards Modal */}
+      {showRedeemModal && (
+        <div className="rewards-modal-overlay" onClick={() => !redeemSuccess && setShowRedeemModal(false)}>
+          <motion.div initial={{scale:0.85,opacity:0}} animate={{scale:1,opacity:1}} className="rewards-modal-content redeem-modal" onClick={e=>e.stopPropagation()}>
+            {!redeemSuccess ? (
+              <>
+                <button className="close-modal" onClick={()=>setShowRedeemModal(false)}>✕</button>
+                <div className="modal-header">
+                  <div className="order-icon">🎁</div>
+                  <h2>Redeem Rewards</h2>
+                  <div className="redeem-points-display">
+                    <span>Your Balance:</span>
+                    <strong className="text-red">{rewardPoints} pts</strong>
+                  </div>
+                </div>
+                <div className="redeem-grid">
+                  {REWARDS.map(reward => {
+                    const canAfford = rewardPoints >= reward.cost;
+                    return (
+                      <motion.div key={reward.id} whileHover={canAfford?{y:-4}:{}} className={`redeem-card ${!canAfford?'locked-reward':''}`}>
+                        <div className="redeem-icon">{reward.icon}</div>
+                        <h4>{reward.title}</h4>
+                        <p>{reward.desc}</p>
+                        <div className="redeem-cost">{reward.cost} pts</div>
+                        <button
+                          className={`redeem-action-btn ${canAfford?'':'disabled'}`}
+                          onClick={()=>canAfford&&handleRedeemReward(reward)}
+                        >
+                          {canAfford ? 'Redeem Now' : `Need ${reward.cost - rewardPoints} more pts`}
+                        </button>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </>
+            ) : (
+              <motion.div initial={{scale:0.5,opacity:0}} animate={{scale:1,opacity:1}} className="order-success">
+                <div className="success-icon">{redeemedReward?.icon}</div>
+                <h2>{redeemedReward?.title} Redeemed!</h2>
+                <p>{redeemedReward?.desc} has been added to your account.</p>
+                <div className="pts-deducted">−{redeemedReward?.cost} pts · Balance: {rewardPoints} pts</div>
+              </motion.div>
+            )}
+          </motion.div>
+        </div>
+      )}
+
+      {/* Real Camera QR Scanner */}
+      <AnimatePresence>
+        {showQRScanner && (
+          <QRScannerModal
+            onClose={() => setShowQRScanner(false)}
+            onScanSuccess={handleRealScanSuccess}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* QR Code Display — show this QR to another device to scan */}
+      <AnimatePresence>
+        {showQRDisplay && (
+          <QRCodeDisplay
+            onClose={() => setShowQRDisplay(false)}
+            onScanEarned={(product, pts) => {
+              setScanCount(prev => prev + 1);
+              setRewardPoints(prev => prev + pts);
+              setScanHistory(prev => [{ id: Date.now(), product, pts, time: 'Just now' }, ...prev.slice(0, 2)]);
+              setFeaturedToast(`+${pts} pts earned! 🎯`);
+              setTimeout(() => setFeaturedToast(null), 3000);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

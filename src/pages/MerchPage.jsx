@@ -7,15 +7,20 @@ const MerchPage = () => {
   const { addToCart } = useContext(AppContext);
 
   const merchItems = [
-    { id: 'm1', name: "Classic Logo Tee", price: 1299, image: "/images/i1.png", category: "Apparel" },
-    { id: 'm2', name: "Vintage Cap", price: 899, image: "/images/i2.png", category: "Accessories" },
-    { id: 'm3', name: "Neon Sign", price: 4599, image: "/images/i3.png", category: "Decor" },
-    { id: 'm4', name: "Signature Glass Set", price: 1499, image: "/images/i4.png", category: "Drinkware" },
-    { id: 'm5', name: "Retro Cooler", price: 8999, image: "/images/i5.png", category: "Outdoor" },
-    { id: 'm6', name: "Coca-Cola Hoodie", price: 2499, image: "/images/i6.png", category: "Apparel" }
+    { id: 'm1', name: "Coca-Cola Tee", price: 1299, image: "/images/i1.png", category: "Best Sellers" },
+    { id: 'm2', name: "Coca-Cola Cap", price: 899, image: "/images/i2.png", category: "Best Sellers" },
+    { id: 'm3', name: "Coca-Cola Neon Sign", price: 4599, image: "/images/i3.png", category: "Limited Edition" },
+    { id: 'm4', name: "Coca-Cola Glass Set", price: 1499, image: "/images/i4.png", category: "Best Sellers" },
+    { id: 'm5', name: "Coca-Cola Cooler", price: 8999, image: "/images/i5.png", category: "Best Sellers" },
+    { id: 'm6', name: "Coca-Cola Hoodie", price: 2499, image: "/images/i6.png", category: "New Arrivals" },
+    { id: 'm7', name: "Coca-Cola Tee", price: 1899, image: "/images/i1.png", category: "Zero Sugar" },
+    { id: 'm8', name: "Coca-Cola Cap", price: 999, image: "/images/i2.png", category: "Energy Drinks" },
+    { id: 'm9', name: "Coca-Cola Neon Sign", price: 699, image: "/images/i3.png", category: "Fruit Flavors" },
+    { id: 'm10', name: "Coca-Cola Glass Set", price: 5999, image: "/images/i4.png", category: "Limited Edition" },
+    { id: 'm11', name: "Coca-Cola Cooler", price: 3499, image: "/images/i5.png", category: "Soft Drinks" }
   ];
 
-  const categories = ['All', 'Apparel', 'Accessories', 'Drinkware', 'Decor', 'Outdoor'];
+  const categories = ['All', 'Soft Drinks', 'Zero Sugar', 'Energy Drinks', 'Fruit Flavors', 'Limited Edition', 'Best Sellers', 'New Arrivals'];
 
   const filteredItems = activeCategory === 'All' 
     ? merchItems 
