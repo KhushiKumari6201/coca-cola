@@ -3,6 +3,9 @@ import './App.css'
 import Hero from './components/Hero'
 import Navbar from './components/Navbar'
 import ProductsPage from './pages/ProductsPage'
+import ProductDetail from './pages/ProductDetail'
+import Checkout from './pages/Checkout'
+import CheckoutSuccess from './pages/CheckoutSuccess'
 import AdminDashboard from './pages/AdminDashboard'
 import CartPage from './pages/CartPage'
 import SellerDashboard from './pages/SellerDashboard'
@@ -99,30 +102,48 @@ const cookieData = {
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
+  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [checkoutTotal, setCheckoutTotal] = useState(0);
+
+  const handleNavigate = (page, productId = null) => {
+    if (page === 'product' && productId) {
+      setSelectedProductId(productId);
+      setCurrentPage('product');
+    } else if (page === 'checkout-success' && productId) {
+      setCheckoutTotal(productId);
+      setCurrentPage('checkout-success');
+    } else {
+      setCurrentPage(page);
+      setSelectedProductId(null);
+    }
+  };
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'home': return <Hero onNavigate={setCurrentPage} />;
-      case 'products': return <ProductsPage />;
+      case 'home': return <Hero onNavigate={handleNavigate} />;
+      case 'products': return <ProductsPage onNavigate={handleNavigate} />;
+      case 'product': return <ProductDetail productId={selectedProductId} onNavigate={handleNavigate} />;
+      case 'cart': return <CartPage onNavigate={handleNavigate} />;
+      case 'checkout': return <Checkout onNavigate={handleNavigate} />;
+      case 'checkout-success': return <CheckoutSuccess totalAmount={checkoutTotal} onNavigate={handleNavigate} />;
       case 'admin': return <AdminDashboard />;
       case 'seller': return <SellerDashboard />;
-      case 'cart': return <CartPage />;
       case 'about': return <AboutPage />;
-      case 'rewards': return <RewardsPage onNavigate={setCurrentPage} />;
+      case 'rewards': return <RewardsPage onNavigate={handleNavigate} />;
       case 'merch': return <MerchPage />;
       case 'contact': return <ContactPage />;
       case 'privacy': return <LegalPage {...privacyData} />;
       case 'terms': return <LegalPage {...termsData} />;
       case 'cookie': return <LegalPage {...cookieData} />;
-      default: return <Hero onNavigate={setCurrentPage} />;
+      default: return <Hero onNavigate={handleNavigate} />;
     }
   }
 
   return (
     <>
-      <Navbar onNavigate={setCurrentPage} currentPage={currentPage} />
+      <Navbar onNavigate={handleNavigate} currentPage={currentPage} />
       {renderPage()}
-      <Footer onNavigate={setCurrentPage} />
+      <Footer onNavigate={handleNavigate} />
     </>
   )
 }

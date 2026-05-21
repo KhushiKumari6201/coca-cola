@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 import './Pages.css';
 
-const CartPage = () => {
+const CartPage = ({ onNavigate }) => {
   const { cart, removeFromCart } = useContext(AppContext);
   const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
@@ -48,7 +48,7 @@ const CartPage = () => {
               <span>Total:</span>
               <span>₹{total.toFixed(2)}</span>
             </div>
-            <button className="checkout-btn">Proceed to Checkout</button>
+            <button className="checkout-btn" onClick={() => onNavigate('checkout')}>Proceed to Checkout</button>
           </div>
         </div>
       )}

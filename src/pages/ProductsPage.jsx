@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 import './Pages.css';
 
-const ProductsPage = () => {
+const ProductsPage = ({ onNavigate }) => {
   const { products, addToCart } = useContext(AppContext);
   const [filter, setFilter] = React.useState('All');
 
@@ -47,7 +47,11 @@ const ProductsPage = () => {
         {/* Products Grid */}
         <div className="products-grid">
           {filteredProducts.length > 0 ? filteredProducts.map(product => (
-            <div key={product.id} className="product-card">
+            <div 
+              key={product.id} 
+              className="product-card"
+              onClick={() => onNavigate('product', product.id)}
+            >
               <div className="product-img-wrapper">
                 <img src={product.image} alt={product.name} />
               </div>
@@ -55,7 +59,26 @@ const ProductsPage = () => {
                 <h3>{product.name}</h3>
                 <p className="price">₹{product.price.toFixed(2)}</p>
                 <p className="seller">Seller: {product.seller}</p>
-                <button className="add-cart-btn" onClick={() => addToCart(product)}>Add to Cart</button>
+                <div className="product-actions">
+                  <button 
+                    className="add-cart-btn" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      addToCart(product);
+                    }}
+                  >
+                    🛒 Add to Cart
+                  </button>
+                  <button 
+                    className="buy-now-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onNavigate('product', product.id);
+                    }}
+                  >
+                    ⚡ Buy Now
+                  </button>
+                </div>
               </div>
             </div>
           )) : (
